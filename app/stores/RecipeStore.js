@@ -7,10 +7,13 @@ class RecipeStore {
     constructor() {
         this.bindActions(RecipeActions);
         this.loaded = false;
+        this.isEdited = false;
         this._id = null;
         this.title = 'Loading';
         this.tags = [];
         this.showModal = false;
+        this.recipeValidationState = '';
+        this.helpBlock = '';
     }
 
     onUpdateRecipeTitleSuccess(title) {
@@ -23,6 +26,7 @@ class RecipeStore {
 
     onHideModalSuccess() {
         this.showModal = false;
+        this.isEdited = false;
     }
 
     onGetRecipeSuccess(data) {
@@ -32,6 +36,16 @@ class RecipeStore {
 
     onGetRecipeFail(errorMessage) {
         this.title = 'Recipe not found :(';
+    }
+
+    onEditRecipeSuccess(doc) {
+        this.isEdited = true;
+        this.title = doc.title;
+    }
+
+    onEditRecipeFail(errorMessage) {
+        this.recipeValidationState = 'has-error';
+        this.helpBlock = errorMessage;
     }
 }
 

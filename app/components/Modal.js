@@ -23,7 +23,13 @@ class Modal extends React.Component {
                 form = (<AddRecipe/>);
                 break;
             case 'editRecipe':
-                form = (<EditRecipe recipeId={this.props.recipeId} recipeTitle={this.props.recipeTitle}/>);
+                form = (<EditRecipe recipeId={this.props.recipeId}
+                                    recipeTitle={this.props.recipeTitle}
+                                    recipeValidationState={this.props.recipeValidationState}
+                                    helpBlock={this.props.helpBlock}
+                                    handleEdit={this.props.handleEdit}
+                                    onChange={this.props.onChange}
+                        />);
                 break;
             case 'deleteRecipe':
                 form = (<DeleteRecipe recipeId={this.props.recipeId} recipeTitle={this.props.recipeTitle} />);

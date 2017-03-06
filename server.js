@@ -79,6 +79,11 @@ app.put('/api/recipes', function(req, res, next) {
 
     Recipe.findOneAndUpdate({ _id: recipeId }, { $set: { title: recipeTitle } }, { new: true }, function(err, doc) {
         if (err) {
+            if (err.name === 'MongoError' && err.code === 11000) {
+                // Duplicate recipe
+                return res.status(500).send({ err: err, succes: false, message: 'Recipe already exist!' });
+            }
+
             // Some other error
             return res.status(500).send(err);
         }

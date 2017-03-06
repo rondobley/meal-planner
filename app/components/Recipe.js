@@ -10,6 +10,8 @@ class Recipe extends React.Component {
         this.state = RecipeStore.getState();
         this.onChange = this.onChange.bind(this);
         this.handleShowModal.bind(this);
+        this.handleEdit = this.handleEdit.bind(this);
+        this.updateTitleInput = this.updateTitleInput.bind(this);
     }
 
     componentDidMount() {
@@ -19,6 +21,12 @@ class Recipe extends React.Component {
 
     componentWillUnmount() {
         RecipeStore.unlisten(this.onChange);
+    }
+
+    componentDidUpdate() {
+        if(this.state.isEdited) {
+            $('#editRecipeModal').modal('hide');
+        }
     }
 
     onChange(state) {
@@ -43,6 +51,25 @@ class Recipe extends React.Component {
         RecipeActions.showModal(params);
     }
 
+    handleEdit(e) {
+        e.preventDefault();
+        let recipeId = e.currentTarget.getAttribute('data-recipe-id');
+        let recipeTitle = this.state.title.trim();
+
+        if(recipeTitle == '') {
+            this.setState({ recipeValidationState:'has-error', helpBlock: 'You must enter a recipe.' });
+        }
+
+        if(recipeTitle) {
+            console.log('yep');
+            RecipeActions.editRecipe(recipeId, recipeTitle);
+        }
+    }
+
+    updateTitleInput(title) {
+        this.setState({ title: title });
+    }
+
     render() {
         let addTagButton = null;
         let editRecipeButton= null;
@@ -56,11 +83,17 @@ class Recipe extends React.Component {
         });
 
         if(this.state.loaded) {
-            addTagButton = <button type='button' className='btn btn-primary btn-xs' data-form='addTagToRecipe' onClick={(e) => this.handleShowModal(e)}>
+            addTagButton = <button type='button'
+                                   className='btn btn-primary btn-xs'
+                                   data-form='addTagToRecipe' onClick={(e) => this.handleShowModal(e)}
+                            >
                     Add Tag <span className='glyphicon glyphicon-plus'></span></button>;
 
-            editRecipeButton =<button type='button' className='btn btn-primary btn-xs' data-form='editRecipe' onClick={(e) => this.handleShowModal(e)}>
-                Edit Recipe <span className='glyphicon glyphicon-pencil'></span></button>;
+            editRecipeButton = <button type='button'
+                                      className='btn btn-primary btn-xs'
+                                      data-form='editRecipe'
+                                      onClick={(e) => this.handleShowModal(e)}
+                                >Edit Recipe <span className='glyphicon glyphicon-pencil'></span></button>;
 
             deleteRecipeButton = <button type='button' className='btn btn-danger btn-xs' data-form='deleteRecipe' onClick={(e) => this.handleShowModal(e)}>
                 Delete Recipe <span className='glyphicon glyphicon-trash'></span></button>;
@@ -69,8 +102,16 @@ class Recipe extends React.Component {
         if(this.state.showModal) {
             switch(this.state.showModal) {
                 case 'editRecipe':
-                    modal = <Modal title="Edit Recipe" form="editRecipe" recipeId={this.state._id}
-                                   recipeTitle={this.state.title}  handleHideModal={this.handleHideModal} />;
+                    modal = <Modal title="Edit Recipe"
+                                   form="editRecipe"
+                                   handleHideModal={this.handleHideModal}
+                                   recipeId={this.state._id}
+                                   recipeTitle={this.state.title}
+                                   recipeValidationState={this.state.recipeValidationState}
+                                   helpBlock={this.state.helpBlock}
+                                   handleEdit={(e) => this.handleEdit(e)}
+                                   onChange={this.updateTitleInput}
+                            />;
                     break;
                 case 'deleteRecipe':
                     modal = <Modal title="Delete Recipe" form="deleteRecipe" recipeId={this.state._id}

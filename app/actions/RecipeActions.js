@@ -5,6 +5,8 @@ class RecipeActions {
         this.generateActions(
             'getRecipeSuccess',
             'getRecipeFail',
+            'editRecipeSuccess',
+            'editRecipeFail',
             'updateRecipeTitle',
             'showModalSuccess',
             'hideModalSuccess'
@@ -30,6 +32,20 @@ class RecipeActions {
             })
             .fail(jqXhr => {
                 this.actions.getRecipeFail(jqXhr.responseJSON.message);
+            });
+    }
+
+    editRecipe(recipeId, recipeTitle) {
+        $.ajax({
+            type: 'PUT',
+            url: '/api/recipes',
+            data: { recipeId: recipeId, recipeTitle: recipeTitle }
+        })
+            .done((data) => {
+                this.actions.editRecipeSuccess(data);
+            })
+            .fail((jqXHR) => {
+                this.actions.editRecipeFail(jqXHR.responseJSON.message);
             });
     }
 }
