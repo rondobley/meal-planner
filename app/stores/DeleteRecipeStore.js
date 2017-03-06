@@ -10,7 +10,7 @@ class DeleteRecipeStore {
         this.isDeleted = false;
     }
 
-    onDeleteRecipeSuccess(successMessage) {
+    onDeleteRecipeSuccess() {
         this.isDeleted = true;
     }
 

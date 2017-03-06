@@ -1,4 +1,5 @@
 import alt from '../alt';
+import {assign} from 'underscore';
 
 class RecipeActions {
     constructor() {
@@ -35,14 +36,15 @@ class RecipeActions {
             });
     }
 
-    editRecipe(recipeId, recipeTitle) {
+    editRecipe(payload) {
         $.ajax({
             type: 'PUT',
             url: '/api/recipes',
-            data: { recipeId: recipeId, recipeTitle: recipeTitle }
+            data: { recipeId: payload.recipeId, recipeTitle: payload.recipeTitle }
         })
             .done((data) => {
-                this.actions.editRecipeSuccess(data);
+                assign(payload, data);
+                this.actions.editRecipeSuccess(payload);
             })
             .fail((jqXHR) => {
                 this.actions.editRecipeFail(jqXHR.responseJSON.message);

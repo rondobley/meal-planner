@@ -61,8 +61,7 @@ class Recipe extends React.Component {
         }
 
         if(recipeTitle) {
-            console.log('yep');
-            RecipeActions.editRecipe(recipeId, recipeTitle);
+            RecipeActions.editRecipe({ recipeId: recipeId, recipeTitle: recipeTitle, history: this.props.history });
         }
     }
 

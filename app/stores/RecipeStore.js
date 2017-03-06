@@ -38,9 +38,10 @@ class RecipeStore {
         this.title = 'Recipe not found :(';
     }
 
-    onEditRecipeSuccess(doc) {
+    onEditRecipeSuccess(payload) {
         this.isEdited = true;
-        this.title = doc.title;
+        this.title = payload.title;
+        payload.history.push('/recipe/' + payload.title, this);
     }
 
     onEditRecipeFail(errorMessage) {
