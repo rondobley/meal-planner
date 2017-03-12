@@ -41,7 +41,7 @@ class DeleteRecipe extends React.Component {
 
         return (
             <form>
-                <div className={'form-group ' + this.state.recipeValidationState}>
+                <div className={'form-group ' + this.state.modalFormValidationState}>
                     <label className='control-label'>Delete {this.props.recipeTitle}?</label>
                     <span className='help-block'>{this.state.helpBlock}</span>
                 </div>

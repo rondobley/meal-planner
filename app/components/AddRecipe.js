@@ -9,7 +9,7 @@ class AddRecipe extends React.Component {
         this.state = {};
         this.state.recipeTitle = '';
         this.state.helpBlock = '';
-        this.state.recipeValidationState = '';
+        this.state.modalFormValidationState = '';
         this.state.isAdded = false;
         this.onChange = this.onChange.bind(this);
     }
@@ -52,7 +52,7 @@ class AddRecipe extends React.Component {
 
         return (
             <form onSubmit={this.handleSubmit.bind(this)}>
-                <div className={'form-group ' + this.state.recipeValidationState}>
+                <div className={'form-group ' + this.state.modalFormValidationState}>
                     <label className='control-label'>Recipe</label>
                     <input type='text' className='form-control' ref='titleTextField' value={this.state.recipeTitle}
                            onChange={AddRecipeActions.updateRecipe} autoFocus/>

@@ -11,8 +11,9 @@ class RecipeStore {
         this._id = null;
         this.title = 'Loading';
         this.tags = [];
+        this.tagToAdd = '';
         this.showModal = false;
-        this.recipeValidationState = '';
+        this.modalFormValidationState = '';
         this.helpBlock = '';
     }
 
@@ -39,13 +40,14 @@ class RecipeStore {
     }
 
     onEditRecipeSuccess(payload) {
-        this.isEdited = true;
         this.title = payload.title;
+        this.tags = payload.recipeTags;
+        this.isEdited = true;
         payload.history.push('/recipe/' + payload.title, this);
     }
 
     onEditRecipeFail(errorMessage) {
-        this.recipeValidationState = 'has-error';
+        this.modalFormValidationState = 'has-error';
         this.helpBlock = errorMessage;
     }
 }

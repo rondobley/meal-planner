@@ -15,7 +15,7 @@ class EditRecipe extends React.Component {
 
         return (
             <form>
-                <div className={'form-group ' + this.props.recipeValidationState}>
+                <div className={'form-group ' + this.props.modalFormValidationState}>
                     <label className='control-label'>Recipe</label>
                     <input type='text' className='form-control' ref='titleTextField' value={this.props.recipeTitle}
                            onChange={this.handleTitleInputChange} autoFocus/>

@@ -12,6 +12,8 @@ class Recipe extends React.Component {
         this.handleShowModal.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
         this.updateTitleInput = this.updateTitleInput.bind(this);
+        this.updateTagToAddInput = this.updateTagToAddInput.bind(this);
+        this.deleteTagClick = this.deleteTagClick.bind(this);
     }
 
     componentDidMount() {
@@ -25,7 +27,7 @@ class Recipe extends React.Component {
 
     componentDidUpdate() {
         if(this.state.isEdited) {
-            $('#editRecipeModal').modal('hide');
+            $('.modal').modal('hide');
         }
     }
 
@@ -39,15 +41,7 @@ class Recipe extends React.Component {
 
     handleShowModal(e) {
         let form = e.currentTarget.getAttribute('data-form');
-        let recipeId = null;
-        let recipeTitle = null;
-        if(typeof e.currentTarget.getAttribute('data-recipe-id') != 'undefined') {
-            recipeId = e.currentTarget.getAttribute('data-recipe-id');
-        }
-        if(typeof e.currentTarget.getAttribute('data-recipe-title') != 'undefined') {
-            recipeTitle = e.currentTarget.getAttribute('data-recipe-title');
-        }
-        let params = {form: form, recipeId: recipeId, recipeTitle: recipeTitle};
+        let params = {form: form};
         RecipeActions.showModal(params);
     }
 
@@ -55,18 +49,58 @@ class Recipe extends React.Component {
         e.preventDefault();
         let recipeId = e.currentTarget.getAttribute('data-recipe-id');
         let recipeTitle = this.state.title.trim();
+        let recipeTags = this.state.tags;
 
         if(recipeTitle == '') {
-            this.setState({ recipeValidationState:'has-error', helpBlock: 'You must enter a recipe.' });
+            this.setState({ modalFormValidationState:'has-error', helpBlock: 'You must enter a recipe.' });
         }
 
         if(recipeTitle) {
-            RecipeActions.editRecipe({ recipeId: recipeId, recipeTitle: recipeTitle, history: this.props.history });
+            RecipeActions.editRecipe({ recipeId: recipeId, recipeTitle: recipeTitle, recipeTags: recipeTags, history: this.props.history });
         }
+    }
+
+    handleAddTag(e) {
+        e.preventDefault();
+        let recipeId = e.currentTarget.getAttribute('data-recipe-id');
+        let recipeTitle = this.state.title.trim();
+        let tagToAdd = this.state.tagToAdd.trim();
+        let recipeTags = this.state.tags;
+
+        if(recipeTags.indexOf(tagToAdd) > -1) {
+            this.setState({modalFormValidationState: 'has-error', helpBlock: 'Tag already exists.'});
+        } else if(tagToAdd == '') {
+            this.setState({ modalFormValidationState:'has-error', helpBlock: 'You must enter a tag.' });
+        } else {
+            recipeTags.push(tagToAdd);
+            RecipeActions.editRecipe({ recipeId: recipeId, recipeTitle: recipeTitle, recipeTags: recipeTags, history: this.props.history });
+        }
+    }
+
+    handleDeleteTag(e) {
+        e.preventDefault();
+        let recipeId = e.currentTarget.getAttribute('data-recipe-id');
+        let recipeTitle = this.state.title.trim();
+        let tagToDelete = this.state.tagToDelete;
+        let recipeTags = this.state.tags;
+        recipeTags.splice(recipeTags.indexOf(tagToDelete), 1);
+
+        RecipeActions.editRecipe({ recipeId: recipeId, recipeTitle: recipeTitle, recipeTags: recipeTags, history: this.props.history });
     }
 
     updateTitleInput(title) {
         this.setState({ title: title });
+    }
+
+    updateTagToAddInput(tag) {
+        this.setState({ tagToAdd: tag });
+    }
+
+    deleteTagClick(e) {
+        e.preventDefault();
+        let tagToDelete = e.currentTarget.getAttribute('data-tag-to-delete');
+        this.setState({tagToDelete: tagToDelete});
+        this.handleShowModal(e);
     }
 
     render() {
@@ -74,19 +108,22 @@ class Recipe extends React.Component {
         let editRecipeButton= null;
         let deleteRecipeButton = null;
         let modal = null;
+        let tags = [];
 
-        var tags = this.state.tags.map((tag) => {
-            return (
-                <li key={tag._tag}>{tag.tag}</li>
-            );
-        });
+        if(this.state.tags) {
+            tags = this.state.tags.map((tag, index) => {
+                return (
+                <span className="label label-info" key={index} data-form='deleteTagFromRecipe' data-tag-to-delete={tag} onClick={(e) => this.deleteTagClick(e)}>
+                    {tag} <span className='glyphicon glyphicon-trash'></span></span>
+                );
+            });
+        }
 
         if(this.state.loaded) {
             addTagButton = <button type='button'
                                    className='btn btn-primary btn-xs'
                                    data-form='addTagToRecipe' onClick={(e) => this.handleShowModal(e)}
-                            >
-                    Add Tag <span className='glyphicon glyphicon-plus'></span></button>;
+                            >Add Tag <span className='glyphicon glyphicon-plus'></span></button>;
 
             editRecipeButton = <button type='button'
                                       className='btn btn-primary btn-xs'
@@ -106,7 +143,7 @@ class Recipe extends React.Component {
                                    handleHideModal={this.handleHideModal}
                                    recipeId={this.state._id}
                                    recipeTitle={this.state.title}
-                                   recipeValidationState={this.state.recipeValidationState}
+                                   modalFormValidationState={this.state.modalFormValidationState}
                                    helpBlock={this.state.helpBlock}
                                    handleEdit={(e) => this.handleEdit(e)}
                                    onChange={this.updateTitleInput}
@@ -117,8 +154,27 @@ class Recipe extends React.Component {
                                    recipeTitle={this.state.title} handleHideModal={this.handleHideModal} />;
                     break;
                 case 'addTagToRecipe':
-                    modal = <Modal title="Add Tag" form="addTagToRecipe" recipeId={this.state._id}
-                                   recipeTitle={this.state.title} handleHideModal={this.handleHideModal} />;
+                modal = <Modal title="Add Tag"
+                               form="addTagToRecipe"
+                               handleHideModal={this.handleHideModal}
+                               recipeId={this.state._id}
+                               tagToAdd={this.state.tagToAdd}
+                               modalFormValidationState={this.state.modalFormValidationState}
+                               helpBlock={this.state.helpBlock}
+                               handleAddTag={(e) => this.handleAddTag(e)}
+                               onChange={this.updateTagToAddInput}
+                />;
+                break;
+                case 'deleteTagFromRecipe':
+                    modal = <Modal title="Delete Tag"
+                                   form="deleteTagFromRecipe"
+                                   handleHideModal={this.handleHideModal}
+                                   recipeId={this.state._id}
+                                   tagToDelete={this.state.tagToDelete}
+                                   modalFormValidationState={this.state.modalFormValidationState}
+                                   helpBlock={this.state.helpBlock}
+                                   handleDeleteTag={(e) => this.handleDeleteTag(e)}
+                    />;
                     break;
             }
         }
@@ -127,11 +183,13 @@ class Recipe extends React.Component {
             <div className='container'>
                 <div className='row'>
                     <div className='col-sm-12 recipe-container'>
-                        <p><Link to="/recipes">Recipes</Link> -> Recipe</p>
+                        <ol className="breadcrumb">
+                            <li><Link to="/recipes">Recipes</Link></li>
+                            <li className="active">Recipe</li>
+                        </ol>
                         <h1>{this.state.title}</h1>
-                        <ul>
-                            {tags}
-                        </ul>
+                        {tags}
+                        <hr></hr>
                         {addTagButton}{editRecipeButton}{deleteRecipeButton}
                     </div>
                 </div>

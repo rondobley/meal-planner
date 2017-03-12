@@ -6,10 +6,10 @@ var recipeSchema = new mongoose.Schema({
         unique: true,
         index: true
     },
-    tags: {
-        type: [{tag: String}],
+    tags: [{
+        type: String,
         index: true
-    }
+    }]
 });
 
 module.exports = mongoose.model('recipe', recipeSchema);

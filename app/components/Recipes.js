@@ -11,11 +11,16 @@ class Recipes extends React.Component {
         this.state = RecipesStore.getState();
         this.onChange = this.onChange.bind(this);
         this.handleShowModal.bind(this);
+        this.handleSearchByTag = this.handleSearchByTag.bind(this);
     }
 
     componentDidMount() {
         RecipesStore.listen(this.onChange);
-        RecipesActions.getAllRecipes();
+        if(this.state.searchTerms) {
+            RecipesActions.searchByTag(this.state.searchTerms);
+        } else {
+            RecipesActions.getAllRecipes();
+        }
     }
 
     componentWillUnmount() {
@@ -36,10 +41,16 @@ class Recipes extends React.Component {
         RecipesActions.showModal(params);
     }
 
+    handleSearchByTag(e) {
+        e.preventDefault();
+        let tag = this.state.searchTerms;
+        RecipesActions.searchByTag(tag);
+    }
+
     render() {
         var recipeNodes = this.state.recipes.map((recipe) => {
             return (
-                <li key={recipe._id}><Link to={'recipe/' + recipe.title}>{recipe.title}</Link></li>
+                <Link to={'recipe/' + recipe.title} className="list-group-item" key={recipe._id}>{recipe.title}</Link>
             );
         });
 
@@ -55,17 +66,31 @@ class Recipes extends React.Component {
         return (
             <div className='container'>
                 <div className='row'>
-                    <div className='col-sm-12'>
-                        <p>Recipes</p>
+                    <div className='col-sm-9'>
+                        <ol className="breadcrumb">
+                            <li className="active"><Link to="/recipes">Recipes</Link></li>
+                        </ol>
+                    </div>
+                    <div className='col-sm-2'>
+                        <div className="input-group">
+                            <input type="text" className="form-control" placeholder="Tag" value={this.state.searchTerms}
+                                   onChange={RecipesActions.updatesearchTermsInput}/>
+                            <span className="input-group-btn">
+                                <button className="btn btn-default" type="button" onClick={(e) => this.handleSearchByTag(e)}>
+                                    <span className='glyphicon glyphicon-search'></span></button>
+                            </span>
+                        </div>
+                    </div>
+                    <div className='col-sm-1'>
                         <button type='button' className='btn btn-primary btn-xs' data-form='addRecipe' onClick={(e) => this.handleShowModal(e)}>
                         Add Recipe <span className='glyphicon glyphicon-plus'></span></button>
                     </div>
                 </div>
                 <div className='row'>
                     <div className='col-sm-12'>
-                        <ul className="list-unstyled">
+                        <div className="list-group">
                             {recipeNodes}
-                        </ul>
+                        </div>
                     </div>
                 </div>
                 <div className='row'>

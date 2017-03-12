@@ -2,6 +2,8 @@ import React from 'react';
 import AddRecipe from './AddRecipe';
 import EditRecipe from './EditRecipe';
 import DeleteRecipe from './DeleteRecipe';
+import AddTagToRecipe from './AddTagToRecipe';
+import DeleteTagFromRecipe from './DeleteTagFromRecipe';
 
 
 class Modal extends React.Component {
@@ -25,7 +27,7 @@ class Modal extends React.Component {
             case 'editRecipe':
                 form = (<EditRecipe recipeId={this.props.recipeId}
                                     recipeTitle={this.props.recipeTitle}
-                                    recipeValidationState={this.props.recipeValidationState}
+                                    modalFormValidationState={this.props.modalFormValidationState}
                                     helpBlock={this.props.helpBlock}
                                     handleEdit={this.props.handleEdit}
                                     onChange={this.props.onChange}
@@ -35,7 +37,21 @@ class Modal extends React.Component {
                 form = (<DeleteRecipe recipeId={this.props.recipeId} recipeTitle={this.props.recipeTitle} />);
                 break;
             case 'addTagToRecipe':
-                form = (<AddTagToRecipe recipeId={this.props.recipeId} recipeTitle={this.props.recipeTitle}/>);
+                form = (<AddTagToRecipe recipeId={this.props.recipeId}
+                                        tagToAdd={this.props.tagToAdd}
+                                        modalFormValidationState={this.props.modalFormValidationState}
+                                        helpBlock={this.props.helpBlock}
+                                        handleAddTag={this.props.handleAddTag}
+                                        onChange={this.props.onChange}
+                        />);
+                break;
+            case 'deleteTagFromRecipe':
+                form = (<DeleteTagFromRecipe recipeId={this.props.recipeId}
+                                             tagToDelete={this.props.tagToDelete}
+                                             modalFormValidationState={this.props.modalFormValidationState}
+                                             helpBlock={this.props.helpBlock}
+                                             handleDeleteTag={this.props.handleDeleteTag}
+                        />);
                 break;
         }
 

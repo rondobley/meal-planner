@@ -40,7 +40,7 @@ class RecipeActions {
         $.ajax({
             type: 'PUT',
             url: '/api/recipes',
-            data: { recipeId: payload.recipeId, recipeTitle: payload.recipeTitle }
+            data: { recipeId: payload.recipeId, recipeTitle: payload.recipeTitle, 'recipeTags[]': payload.recipeTags }
         })
             .done((data) => {
                 assign(payload, data);

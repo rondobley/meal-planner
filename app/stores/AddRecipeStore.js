@@ -7,7 +7,7 @@ class AddRecipeStore {
         this.bindActions(AddRecipeActions);
         this.recipeTitle = '';
         this.helpBlock = '';
-        this.recipeValidationState = '';
+        this.modalFormValidationState = '';
         this.isAdded = false;
     }
 
@@ -18,19 +18,20 @@ class AddRecipeStore {
     }
 
     onAddRecipeFail(errorMessage) {
-        this.recipeValidationState = 'has-error';
+        this.recipeTitle = '';
+        this.modalFormValidationState = 'has-error';
         this.helpBlock = errorMessage;
     }
 
-    onUpdateRecipe(event) {
-        this.recipeTitle = event.target.value;
-        this.recipeValidationState = '';
+    onUpdateRecipe(e) {
+        this.recipeTitle = e.target.value;
+        this.modalFormValidationState = '';
         this.helpBlock = '';
     }
 
     onInvalidRecipe() {
         this.recipeTitle = '';
-        this.recipeValidationState = 'has-error';
+        this.modalFormValidationState = 'has-error';
         this.helpBlock = 'Please enter a recipe.';
     }
 }

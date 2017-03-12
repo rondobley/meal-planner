@@ -5,7 +5,10 @@ class RecipesActions {
         this.generateActions(
             'getAllRecipesSuccess',
             'showModalSuccess',
-            'hideModalSuccess'
+            'hideModalSuccess',
+            'updatesearchTermsInput',
+            'searchByTagSuccess',
+            'searchByTagFail'
         );
     }
 
@@ -25,6 +28,24 @@ class RecipesActions {
             .fail(jqXhr => {
                 this.actions.getAllRecipesFail(jqXhr.responseJSON.message);
             });
+    }
+
+    searchByTag(tags) {
+        if(tags) {
+            $.ajax({url: '/api/recipes/search/tag/' + tags})
+                .done(data => {
+                    if(data.length == 0) {
+                        this.actions.searchByTagFail('No dishes found');
+                    } else {
+                        this.actions.searchByTagSuccess(data);
+                    }
+                })
+                .fail(jqXhr => {
+                    this.actions.searchByTagFail(jqXhr.responseJSON.message);
+                });
+        } else {
+            this.actions.searchByTagFail('No Tags provided');
+        }
     }
 }
 

@@ -6,7 +6,7 @@ class DeleteRecipeStore {
         this.bindActions(DeleteRecipeActions);
         this.title = '';
         this.helpBlock = '';
-        this.recipeValidationState = '';
+        this.modalFormValidationState = '';
         this.isDeleted = false;
     }
 
@@ -15,7 +15,7 @@ class DeleteRecipeStore {
     }
 
     onDeleteRecipeFail(errorMessage) {
-        this.recipeValidationState = 'has-error';
+        this.modalFormValidationState = 'has-error';
         this.helpBlock = errorMessage;
     }
 }

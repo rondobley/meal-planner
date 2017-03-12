@@ -5,6 +5,7 @@ class RecipesStore {
     constructor() {
         this.bindActions(RecipesActions);
         this.recipes = [];
+        this.searchTerms = '';
         this.showModal = false;
     }
 
@@ -22,6 +23,18 @@ class RecipesStore {
 
     onGetAllRecipesFail(errorMessage) {
         toastr.error(errorMessage);
+    }
+
+    onSearchByTagSuccess(data) {
+        this.recipes = data;
+    }
+
+    onSearchByTagFail(errorMessage) {
+        toastr.error(errorMessage);
+    }
+
+    onUpdatesearchTermsInput(e) {
+        this.searchTerms = e.target.value;
     }
 }
 
