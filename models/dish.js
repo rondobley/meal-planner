@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
-var recipeSchema = new mongoose.Schema({
-    title: {
+var dishSchema = new mongoose.Schema({
+    name: {
         type: String,
         unique: true,
         index: true
@@ -12,4 +12,4 @@ var recipeSchema = new mongoose.Schema({
     }]
 });
 
-module.exports = mongoose.model('recipe', recipeSchema);
+module.exports = mongoose.model('dish', dishSchema);

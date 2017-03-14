@@ -1,10 +1,10 @@
 import alt from '../alt';
-import RecipesActions from '../actions/RecipesActions';
+import DishesActions from '../actions/DishesActions';
 
-class RecipesStore {
+class DishesStore {
     constructor() {
-        this.bindActions(RecipesActions);
-        this.recipes = [];
+        this.bindActions(DishesActions);
+        this.dishes = [];
         this.searchTerms = '';
         this.showModal = false;
     }
@@ -17,25 +17,25 @@ class RecipesStore {
         this.showModal = false;
     }
 
-    onGetAllRecipesSuccess(data) {
-        this.recipes = data;
+    onGetAllDishesSuccess(data) {
+        this.dishes = data;
     }
 
-    onGetAllRecipesFail(errorMessage) {
+    onGetAllDishesFail(errorMessage) {
         toastr.error(errorMessage);
     }
 
     onSearchByTagSuccess(data) {
-        this.recipes = data;
+        this.dishes = data;
     }
 
     onSearchByTagFail(errorMessage) {
         toastr.error(errorMessage);
     }
 
-    onUpdatesearchTermsInput(e) {
+    onUpdateSearchTermsInput(e) {
         this.searchTerms = e.target.value;
     }
 }
 
-export default alt.createStore(RecipesStore);
+export default alt.createStore(DishesStore);

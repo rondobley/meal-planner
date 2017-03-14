@@ -1,9 +1,9 @@
 import React from 'react';
-import AddRecipe from './AddRecipe';
-import EditRecipe from './EditRecipe';
-import DeleteRecipe from './DeleteRecipe';
-import AddTagToRecipe from './AddTagToRecipe';
-import DeleteTagFromRecipe from './DeleteTagFromRecipe';
+import AddDish from './AddDish';
+import EditDish from './EditDish';
+import DeleteDish from './DeleteDish';
+import AddTagToDish from './AddTagToDish';
+import DeleteTagFromDish from './DeleteTagFromDish';
 
 
 class Modal extends React.Component {
@@ -21,23 +21,23 @@ class Modal extends React.Component {
         let form = null;
 
         switch(this.props.form) {
-            case 'addRecipe':
-                form = (<AddRecipe/>);
+            case 'addDish':
+                form = (<AddDish/>);
                 break;
-            case 'editRecipe':
-                form = (<EditRecipe recipeId={this.props.recipeId}
-                                    recipeTitle={this.props.recipeTitle}
+            case 'editDish':
+                form = (<EditDish dishId={this.props.dishId}
+                                    dishName={this.props.dishName}
                                     modalFormValidationState={this.props.modalFormValidationState}
                                     helpBlock={this.props.helpBlock}
                                     handleEdit={this.props.handleEdit}
                                     onChange={this.props.onChange}
                         />);
                 break;
-            case 'deleteRecipe':
-                form = (<DeleteRecipe recipeId={this.props.recipeId} recipeTitle={this.props.recipeTitle} />);
+            case 'deleteDish':
+                form = (<DeleteDish dishId={this.props.dishId} dishName={this.props.dishName} />);
                 break;
-            case 'addTagToRecipe':
-                form = (<AddTagToRecipe recipeId={this.props.recipeId}
+            case 'addTagToDish':
+                form = (<AddTagToDish dishId={this.props.dishId}
                                         tagToAdd={this.props.tagToAdd}
                                         modalFormValidationState={this.props.modalFormValidationState}
                                         helpBlock={this.props.helpBlock}
@@ -45,8 +45,8 @@ class Modal extends React.Component {
                                         onChange={this.props.onChange}
                         />);
                 break;
-            case 'deleteTagFromRecipe':
-                form = (<DeleteTagFromRecipe recipeId={this.props.recipeId}
+            case 'deleteTagFromDish':
+                form = (<DeleteTagFromDish dishId={this.props.dishId}
                                              tagToDelete={this.props.tagToDelete}
                                              modalFormValidationState={this.props.modalFormValidationState}
                                              helpBlock={this.props.helpBlock}

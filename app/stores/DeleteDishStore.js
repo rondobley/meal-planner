@@ -1,23 +1,23 @@
 import alt from '../alt';
-import DeleteRecipeActions from '../actions/DeleteRecipeActions';
+import DeleteDishActions from '../actions/DeleteDishActions';
 
-class DeleteRecipeStore {
+class DeleteDishStore {
     constructor() {
-        this.bindActions(DeleteRecipeActions);
-        this.title = '';
+        this.bindActions(DeleteDishActions);
+        this.name = '';
         this.helpBlock = '';
         this.modalFormValidationState = '';
         this.isDeleted = false;
     }
 
-    onDeleteRecipeSuccess() {
+    onDeleteDishSuccess() {
         this.isDeleted = true;
     }
 
-    onDeleteRecipeFail(errorMessage) {
+    onDeleteDishFail(errorMessage) {
         this.modalFormValidationState = 'has-error';
         this.helpBlock = errorMessage;
     }
 }
 
-export default alt.createStore(DeleteRecipeStore);
+export default alt.createStore(DeleteDishStore);

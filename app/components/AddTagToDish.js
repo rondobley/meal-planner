@@ -1,6 +1,6 @@
 import React from 'react';
 
-class AddTagToRecipe extends React.Component {
+class AddTagToDish extends React.Component {
     constructor(props) {
         super(props);
         this.handleTagInputChange = this.handleTagInputChange.bind(this);
@@ -11,13 +11,13 @@ class AddTagToRecipe extends React.Component {
     }
 
     render() {
-        let button = <button type='submit' className='btn btn-primary' data-recipe-id={this.props.recipeId} onClick={this.props.handleAddTag}>Save</button>;
+        let button = <button type='submit' className='btn btn-primary' data-dish-id={this.props.dishId} onClick={this.props.handleAddTag}>Save</button>;
 
         return (
             <form>
                 <div className={'form-group ' + this.props.modalFormValidationState}>
                     <label className='control-label'>Tag</label>
-                    <input type='text' className='form-control' ref='tagTextField' value={this.props.tagToAdd}
+                    <input type='text' className='form-control' ref='tagInput' value={this.props.tagToAdd}
                            onChange={this.handleTagInputChange} autoFocus/>
                     <span className='help-block'>{this.props.helpBlock}</span>
                 </div>
@@ -27,4 +27,4 @@ class AddTagToRecipe extends React.Component {
     }
 }
 
-export default AddTagToRecipe;
+export default AddTagToDish;

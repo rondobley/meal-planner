@@ -1,12 +1,12 @@
 import React from 'react';
 
-class DeleteTagFromRecipe extends React.Component {
+class DeleteTagFromDish extends React.Component {
     constructor(props) {
         super(props);
     }
 
     render() {
-        let button = <button type='submit' className='btn btn-danger' data-recipe-id={this.props.recipeId}
+        let button = <button type='submit' className='btn btn-danger' data-dish-id={this.props.dishId}
                              data-tag-value={this.props.tagToDelete} onClick={this.props.handleDeleteTag}>Delete Tag</button>;
 
         return (
@@ -21,4 +21,4 @@ class DeleteTagFromRecipe extends React.Component {
     }
 }
 
-export default DeleteTagFromRecipe;
+export default DeleteTagFromDish;

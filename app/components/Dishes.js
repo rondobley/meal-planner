@@ -1,30 +1,30 @@
 import React from 'react';
 import { Link } from 'react-router';
-import RecipesStore from '../stores/RecipesStore';
-import RecipesActions from '../actions/RecipesActions';
+import DishesStore from '../stores/DishesStore';
+import DishesActions from '../actions/DishesActions';
 import Modal from './Modal';
 
 
-class Recipes extends React.Component {
+class Dishes extends React.Component {
     constructor(props) {
         super(props);
-        this.state = RecipesStore.getState();
+        this.state = DishesStore.getState();
         this.onChange = this.onChange.bind(this);
         this.handleShowModal.bind(this);
         this.handleSearchByTag = this.handleSearchByTag.bind(this);
     }
 
     componentDidMount() {
-        RecipesStore.listen(this.onChange);
+        DishesStore.listen(this.onChange);
         if(this.state.searchTerms) {
-            RecipesActions.searchByTag(this.state.searchTerms);
+            DishesActions.searchByTag(this.state.searchTerms);
         } else {
-            RecipesActions.getAllRecipes();
+            DishesActions.getAllDishes();
         }
     }
 
     componentWillUnmount() {
-        RecipesStore.unlisten(this.onChange);
+        DishesStore.unlisten(this.onChange);
     }
 
     onChange(state) {
@@ -32,33 +32,33 @@ class Recipes extends React.Component {
     }
 
     handleHideModal() {
-        RecipesActions.hideModal();
+        DishesActions.hideModal();
     }
 
     handleShowModal(e) {
         let form = e.currentTarget.getAttribute('data-form');
-        let params = {form: form};
-        RecipesActions.showModal(params);
+        let params = { form: form };
+        DishesActions.showModal(params);
     }
 
     handleSearchByTag(e) {
         e.preventDefault();
         let tag = this.state.searchTerms;
-        RecipesActions.searchByTag(tag);
+        DishesActions.searchByTag(tag);
     }
 
     render() {
-        var recipeNodes = this.state.recipes.map((recipe) => {
+        var dishNodes = this.state.dishes.map((dish) => {
             return (
-                <Link to={'recipe/' + recipe.title} className="list-group-item" key={recipe._id}>{recipe.title}</Link>
+                <Link to={'dish/' + dish.name} className="list-group-item" key={dish._id}>{dish.name}</Link>
             );
         });
 
         let modal = null;
         if(this.state.showModal) {
             switch(this.state.showModal) {
-                case 'addRecipe':
-                    modal = <Modal title="Add Recipe" form="addRecipe" handleHideModal={this.handleHideModal} />;
+                case 'addDish':
+                    modal = <Modal title="Add Dish" form="addDish" handleHideModal={this.handleHideModal} />;
                     break;
             }
         }
@@ -68,13 +68,13 @@ class Recipes extends React.Component {
                 <div className='row'>
                     <div className='col-sm-9'>
                         <ol className="breadcrumb">
-                            <li className="active"><Link to="/recipes">Recipes</Link></li>
+                            <li className="active"><Link to="/dishes">Dishes</Link></li>
                         </ol>
                     </div>
                     <div className='col-sm-2'>
                         <div className="input-group">
                             <input type="text" className="form-control" placeholder="Tag" value={this.state.searchTerms}
-                                   onChange={RecipesActions.updatesearchTermsInput}/>
+                                   onChange={DishesActions.updateSearchTermsInput}/>
                             <span className="input-group-btn">
                                 <button className="btn btn-default" type="button" onClick={(e) => this.handleSearchByTag(e)}>
                                     <span className='glyphicon glyphicon-search'></span></button>
@@ -82,14 +82,14 @@ class Recipes extends React.Component {
                         </div>
                     </div>
                     <div className='col-sm-1'>
-                        <button type='button' className='btn btn-primary btn-xs' data-form='addRecipe' onClick={(e) => this.handleShowModal(e)}>
-                        Add Recipe <span className='glyphicon glyphicon-plus'></span></button>
+                        <button type='button' className='btn btn-primary btn-xs' data-form='addDish' onClick={(e) => this.handleShowModal(e)}>
+                        Add Dish <span className='glyphicon glyphicon-plus'></span></button>
                     </div>
                 </div>
                 <div className='row'>
                     <div className='col-sm-12'>
                         <div className="list-group">
-                            {recipeNodes}
+                            {dishNodes}
                         </div>
                     </div>
                 </div>
@@ -103,4 +103,4 @@ class Recipes extends React.Component {
     }
 }
 
-export default Recipes;
+export default Dishes;

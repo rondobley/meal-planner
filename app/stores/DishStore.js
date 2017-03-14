@@ -1,15 +1,15 @@
 import alt from '../alt';
 import {assign} from 'underscore';
 
-import RecipeActions from '../actions/RecipeActions';
+import DishActions from '../actions/DishActions';
 
-class RecipeStore {
+class DishStore {
     constructor() {
-        this.bindActions(RecipeActions);
+        this.bindActions(DishActions);
         this.loaded = false;
         this.isEdited = false;
         this._id = null;
-        this.title = 'Loading';
+        this.name = 'Loading';
         this.tags = [];
         this.tagToAdd = '';
         this.showModal = false;
@@ -17,8 +17,8 @@ class RecipeStore {
         this.helpBlock = '';
     }
 
-    onUpdateRecipeTitleSuccess(title) {
-        this.title = title;
+    onUpdateDishNameSuccess(name) {
+        this.name = name;
     }
 
     onShowModalSuccess(params) {
@@ -26,30 +26,32 @@ class RecipeStore {
     }
 
     onHideModalSuccess() {
-        this.showModal = false;
         this.isEdited = false;
+        this.showModal = false;
+        this.modalFormValidationState = '';
+        this.helpBlock = '';
     }
 
-    onGetRecipeSuccess(data) {
+    onGetDishSuccess(data) {
         assign(this, data);
         this.loaded = true;
     }
 
-    onGetRecipeFail(errorMessage) {
-        this.title = 'Recipe not found :(';
+    onGetDishFail(errorMessage) {
+        this.name = 'Dish not found :(';
     }
 
-    onEditRecipeSuccess(payload) {
-        this.title = payload.title;
-        this.tags = payload.recipeTags;
+    onEditDishSuccess(payload) {
+        this.name = payload.name;
+        this.tags = payload.tags;
         this.isEdited = true;
-        payload.history.push('/recipe/' + payload.title, this);
+        payload.history.push('/dish/' + payload.name, this);
     }
 
-    onEditRecipeFail(errorMessage) {
+    onEditDishFail(errorMessage) {
         this.modalFormValidationState = 'has-error';
         this.helpBlock = errorMessage;
     }
 }
 
-export default alt.createStore(RecipeStore);
+export default alt.createStore(DishStore);

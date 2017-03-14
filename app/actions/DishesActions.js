@@ -1,12 +1,12 @@
 import alt from '../alt';
 
-class RecipesActions {
+class DishesActions {
     constructor() {
         this.generateActions(
-            'getAllRecipesSuccess',
+            'getAllDishesSuccess',
             'showModalSuccess',
             'hideModalSuccess',
-            'updatesearchTermsInput',
+            'updateSearchTermsInput',
             'searchByTagSuccess',
             'searchByTagFail'
         );
@@ -20,19 +20,19 @@ class RecipesActions {
         this.actions.hideModalSuccess();
     }
 
-    getAllRecipes() {
-        $.ajax({ url: '/api/recipes' })
+    getAllDishes() {
+        $.ajax({ url: '/api/dishes' })
             .done(data => {
-                this.actions.getAllRecipesSuccess(data);
+                this.actions.getAllDishesSuccess(data);
             })
             .fail(jqXhr => {
-                this.actions.getAllRecipesFail(jqXhr.responseJSON.message);
+                this.actions.getAllDishesFail(jqXhr.responseJSON.message);
             });
     }
 
     searchByTag(tags) {
         if(tags) {
-            $.ajax({url: '/api/recipes/search/tag/' + tags})
+            $.ajax({url: '/api/dishes/search/tag/' + tags})
                 .done(data => {
                     if(data.length == 0) {
                         this.actions.searchByTagFail('No dishes found');
@@ -49,4 +49,4 @@ class RecipesActions {
     }
 }
 
-export default alt.createActions(RecipesActions);
+export default alt.createActions(DishesActions);

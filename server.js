@@ -16,7 +16,7 @@ var mongoose = require('mongoose');
 var config = require('./config');
 
 
-var Recipe = require('./models/recipe');
+var Dish = require('./models/dish');
 var Tag = require('./models/tag');
 
 mongoose.connect(config.database);
@@ -33,56 +33,96 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 /**
- * GET /api/recipes
+ * /api/dishes
  */
-app.get('/api/recipes', function(req, res, next) {
-    Recipe.find({})
-        .exec(function(err, recipes) {
+/**
+ * GET /api/dishes
+ */
+app.get('/api/dishes', function(req, res, next) {
+    Dish.find({})
+        .exec(function(err, dish) {
             if (err) return next(err);
 
-            return res.send(recipes);
+            return res.send(dish);
         });
 });
 
 /**
- * POST /api/recipes
- * Adds a new recipe to the database.
+ * GET /api/dishes/search/tag/:tag
+ * Returns found dishes
  */
-app.post('/api/recipes', function(req, res, next) {
-    var recipeTitle = req.body.recipeTitle;
-    var recipe = new Recipe({
-        title: recipeTitle,
+app.get('/api/dishes/search/tag/:tags', function(req, res, next) {
+    var tags = req.params.tags;
+    var seacrhArray = tags.split(" ");
+    Dish.find({ tags: { "$in" : seacrhArray } }, function(err, dishes) {
+        if (err) return next(err);
+        if (!dishes) {
+            return res.status(404).send({ message: 'No dishes found.' });
+        }
+        res.send(dishes);
+    });
+});
+
+/**
+ * /api/dish
+ */
+/**
+ * GET /api/dish/:name
+ * Returns a dish
+ */
+app.get('/api/dish/:name', function(req, res, next) {
+    var name = req.params.name;
+    Dish.findOne({ name: name }, function(err, dish) {
+        if (err) return next(err);
+        if (!dish) {
+            return res.status(404).send({ message: 'Dish not found.' });
+        }
+        res.send(dish);
+    });
+});
+
+/**
+ * POST /api/dish
+ * Adds a new dish to the database.
+ */
+app.post('/api/dish', function(req, res, next) {
+    var dishName = req.body.dishName;
+    var dish = new Dish({
+        name: dishName,
         tags: []
     });
 
-    recipe.save(function(err) {
+    dish.save(function(err) {
         if (err) {
             if (err.name === 'MongoError' && err.code === 11000) {
-                // Duplicate recipe
-                return res.status(500).send({ err: err, succes: false, message: 'Recipe already exist!' });
+                // Duplicate dishes
+                return res.status(500).send({ err: err, succes: false, message: 'Dish already exist!' });
             }
 
             // Some other error
             return res.status(500).send(err);
         }
-        res.send({ message: recipeTitle + ' has been added successfully!' });
+        res.send({ message: dishName + ' has been added successfully!' });
     });
 });
 
 /**
- * PUT /api/recipes
- * Update a recipe in database.
+ * PUT /api/dish
+ * Update a dish in database.
  */
-app.put('/api/recipes', function(req, res, next) {
-    var recipeId = req.body.recipeId;
-    var recipeTitle = req.body.recipeTitle;
-    var recipeTags = req.body['recipeTags[]'];
+app.put('/api/dish', function(req, res, next) {
+    var dishId = req.body.dishId;
+    var dishName = req.body.dishName;
+    var dishTags = req.body['dishTags[]'];
+    if(typeof dishTags == 'undefined') {
+        dishTags = [];
+    }
 
-    Recipe.findOneAndUpdate({ _id: recipeId }, { $set: { title: recipeTitle, tags: recipeTags } }, { new: true }, function(err, doc) {
+    Dish.findOneAndUpdate({ _id: dishId }, { $set: { name: dishName, tags: dishTags } }, { new: true }, function(err, doc) {
         if (err) {
             if (err.name === 'MongoError' && err.code === 11000) {
-                // Duplicate recipe
-                return res.status(500).send({ err: err, succes: false, message: 'Recipe already exist!' });
+                // Duplicate dishes
+                return res.status(500).send({ err: err, succes: false, message: 'Dish already exist!' });
             }
 
             // Some other error
@@ -93,62 +133,35 @@ app.put('/api/recipes', function(req, res, next) {
 });
 
 /**
- * DELETE /api/recipes
- * Deletes a recipe from the database
+ * DELETE /api/dish
+ * Deletes a dish from the database
  */
-app.delete('/api/recipes', function(req, res, next) {
-    var recipeId = req.body.recipeId;
-    var recipeTitle = req.body.recipeTitle;
+app.delete('/api/dish', function(req, res, next) {
+    var dishId = req.body.dishId;
+    var dishName = req.body.dishName;
 
-    Recipe.findByIdAndRemove(recipeId, function(err) {
+    Dish.findByIdAndRemove(dishId, function(err) {
         if (err) {
             // Some other error
             return res.status(500).send(err);
         }
-        res.send({ message: recipeTitle + ' has been deleted successfully!' });
+        res.send({ message: dishName + ' has been deleted successfully!' });
     });
 });
+
 
 /**
- * GET /api/recipes/:title
- * Returns a recipe
+ * /api/tags
  */
-app.get('/api/recipes/:title', function(req, res, next) {
-    var title = req.params.title;
-    Recipe.findOne({ title: title }, function(err, recipe) {
-        if (err) return next(err);
-        if (!recipe) {
-            return res.status(404).send({ message: 'Recipe not found.' });
-        }
-        res.send(recipe);
-    });
-});
-
-/**
- * GET /api/recipes/search/tag/:tag
- * Returns a recipe
- */
-app.get('/api/recipes/search/tag/:tags', function(req, res, next) {
-    var tags = req.params.tags;
-    var seacrhArray = tags.split(" ");
-    Recipe.find({ tags: { "$in" : seacrhArray } }, function(err, recipe) {
-        if (err) return next(err);
-        if (!recipe) {
-            return res.status(404).send({ message: 'No dishes found.' });
-        }
-        res.send(recipe);
-    });
-});
-
 /**
  * GET /api/tags
  */
 app.get('/api/tags', function(req, res, next) {
     Tag.find({})
-        .exec(function(err, recipes) {
+        .exec(function(err, dish) {
             if (err) return next(err);
 
-            return res.send(recipes);
+            return res.send(dish);
         });
 });
 
