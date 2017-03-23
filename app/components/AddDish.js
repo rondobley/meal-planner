@@ -39,7 +39,7 @@ class AddDish extends React.Component {
 
         if(!dishName) {
             AddDishActions.invalidDishName();
-            ReactDOM.findDOMNode(this.refs.dishNameField).focus();
+            ReactDOM.findDOMNode(this.refs.dishNameInput).focus();
         } else {
             AddDishActions.addDish(dishName);
         }
@@ -52,8 +52,8 @@ class AddDish extends React.Component {
             <form onSubmit={this.handleSubmit.bind(this)}>
                 <div className={'form-group ' + this.state.modalFormValidationState}>
                     <label className='control-label'>Dish Name</label>
-                    <input type='text' className='form-control' ref='dishNameField' value={this.state.dishName}
-                           onChange={AddDishActions.updateDishNameField} autoFocus/>
+                    <input type='text' className='form-control' ref='dishNameInput' value={this.state.dishName}
+                           onChange={AddDishActions.updateDishNameInput} autoFocus/>
                     <span className='help-block'>{this.state.helpBlock}</span>
                 </div>
                 {button}

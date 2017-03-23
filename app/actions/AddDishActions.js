@@ -5,7 +5,7 @@ class AddDishActions {
         this.generateActions(
             'addDishSuccess',
             'addDishFail',
-            'updateDishNameField',
+            'updateDishNameInput',
             'invalidDishName'
         );
     }

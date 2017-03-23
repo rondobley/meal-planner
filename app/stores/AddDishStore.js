@@ -24,7 +24,7 @@ class AddDishStore {
         this.isAdded = false;
     }
 
-    onUpdateDishNameField(e) {
+    onUpdateDishNameInput(e) {
         this.dishName = e.target.value;
         this.modalFormValidationState = '';
         this.helpBlock = '';
