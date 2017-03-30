@@ -44,7 +44,12 @@ class Dishes extends React.Component {
     handleSearchByTag(e) {
         e.preventDefault();
         let tag = this.state.searchTerms;
-        DishesActions.searchByTag(tag);
+
+        if(tag) {
+            DishesActions.searchByTag(tag);
+        } else {
+            DishesActions.getAllDishes();
+        }
     }
 
     render() {
@@ -64,14 +69,14 @@ class Dishes extends React.Component {
         }
 
         return (
-            <div className='container'>
+            <div className='container dishes-container'>
                 <div className='row'>
-                    <div className='col-sm-9'>
+                    <div className='col-sm-9 col-md-6 col-lg-8'>
                         <ol className="breadcrumb">
                             <li className="active"><Link to="/dishes">Dishes</Link></li>
                         </ol>
                     </div>
-                    <div className='col-sm-2'>
+                    <div className='col-sm-2 col-md-4 col-lg-3'>
                         <div className="input-group">
                             <input type="text" className="form-control" placeholder="Tag" value={this.state.searchTerms}
                                    onChange={DishesActions.updateSearchTermsInput}/>
@@ -81,8 +86,8 @@ class Dishes extends React.Component {
                             </span>
                         </div>
                     </div>
-                    <div className='col-sm-1'>
-                        <button type='button' className='btn btn-primary btn-xs' data-form='addDish' onClick={(e) => this.handleShowModal(e)}>
+                    <div className='col-sm-1 col-md-2 col-lg-1 text-right'>
+                        <button type='button' className='btn btn-primary btn-xs btn-add-dish' data-form='addDish' onClick={(e) => this.handleShowModal(e)}>
                         Add Dish <span className='glyphicon glyphicon-plus'></span></button>
                     </div>
                 </div>

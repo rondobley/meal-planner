@@ -13,6 +13,8 @@ var logger = require('morgan');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
+var favicon = require('serve-favicon');
+
 
 var mongoose = require('mongoose');
 
@@ -39,6 +41,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(favicon(__dirname + '/public/favicon.ico'));
 
 // required for passport
 app.use(session({secret: 'ilovescotchscotchyscotchscotch'})); // session secret
@@ -48,7 +51,6 @@ app.use(flash()); // use connect-flash for flash messages stored in session
 
 // route middleware to make sure a user is logged in
 function isLoggedIn(req, res, next) {
-    console.log('Is Logged in', req.isAuthenticated());
     // if user is authenticated in the session, carry on
     if (req.isAuthenticated()) {
         return next();
@@ -70,7 +72,6 @@ app.all('/api/*', isLoggedIn);
  * GET /api/dishes
  */
 app.get('/api/dishes', function (req, res, next) {
-    console.log('api dishes', req);
     Dish.find({})
         .exec(function (err, dish) {
             if (err) return next(err);
@@ -128,7 +129,7 @@ app.post('/api/dish', function (req, res, next) {
         if (err) {
             if (err.name === 'MongoError' && err.code === 11000) {
                 // Duplicate dishes
-                return res.status(500).send({err: err, succes: false, message: 'Dish already exist!'});
+                return res.status(500).send({err: err, success: false, message: 'Dish already exist!'});
             }
 
             // Some other error
@@ -154,7 +155,7 @@ app.put('/api/dish', function (req, res, next) {
         if (err) {
             if (err.name === 'MongoError' && err.code === 11000) {
                 // Duplicate dishes
-                return res.status(500).send({err: err, succes: false, message: 'Dish already exist!'});
+                return res.status(500).send({err: err, success: false, message: 'Dish already exist!'});
             }
 
             // Some other error
@@ -210,7 +211,7 @@ app.post('/api/tags', function (req, res, next) {
         if (err) {
             if (err.name === 'MongoError' && err.code === 11000) {
                 // Duplicate tag
-                return res.status(500).send({err: err, succes: false, message: 'Tag already exist!'});
+                return res.status(500).send({err: err, success: false, message: 'Tag already exist!'});
             }
 
             // Some other error
@@ -262,16 +263,34 @@ app.delete('/api/tags', function (req, res, next) {
 /**
  * App pages
  */
+/*
 app.post('/', passport.authenticate('local-login', {
     successRedirect : '/dishes', // redirect to the secure profile section
     failureRedirect : '/', // redirect back to the login page if there is an error
     failureFlash : true // allow flash messages
 }));
+*/
+
+app.post('/', function(req, res, next) {
+    passport.authenticate('local-login', function(err, user, info) {
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            return res.send({success: false, message: req.loginMessage});
+        }
+        req.logIn(user, function(err) {
+            if (err) {
+                return next(err);
+            }
+            return res.send({success: true});
+        });
+    })(req, res, next);
+});
 
 app.get('/', function(req, res, next) {
-    var loginMessage = req.flash('loginMessage');
     if(req.user) {
-        res.redirect('/dishes');
+        res.status(302).redirect('/dishes');
     } else {
         return next();
     }
@@ -279,7 +298,7 @@ app.get('/', function(req, res, next) {
 
 app.get('/logout', function (req, res, next) {
     req.logout();
-    res.redirect('/');
+    res.status(302).redirect('/');
 });
 
 app.use(function (req, res) {

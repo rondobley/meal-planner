@@ -8,7 +8,9 @@ class HomeStore {
         this.password = '';
         this.emailHelpBlock = '';
         this.passwordHelpBlock = '';
+        this.formHelpBlock = '';
         this.formValidationState = '';
+        this.isLoggedIn = false;
     }
 
     onUpdateEmailInput(e) {
@@ -24,7 +26,6 @@ class HomeStore {
     }
 
     onUpdatePasswordInput(e) {
-        console.log('Store update password input');
         this.password = e.target.value;
         this.formValidationState = '';
         this.passwordHelpBlock = '';
@@ -34,6 +35,15 @@ class HomeStore {
         this.password = '';
         this.formValidationState = 'has-error';
         this.passwordHelpBlock = 'Please enter a password';
+    }
+
+    onLoginSuccess(data) {
+        if(data.success != false) {
+            this.isLoggedIn = true;
+        } else {
+            this.formHelpBlock = data.message;
+            this.formValidationState = 'has-error';
+        }
     }
 }
 
