@@ -6,4 +6,5 @@ A basic meal planner app powered by Node.js, MongoDB and React with Flux archite
 ## Table of contents
 
 - [License](LICENSE.md)
+- [Install](INSTALL.md)
 - [Road Map](RoadMap.md)
