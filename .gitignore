@@ -36,3 +36,7 @@ bower_components
 # Compiled files
 public/css/*
 public/js/*
+
+# Database config
+config/database.js
+
