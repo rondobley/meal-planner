@@ -4,6 +4,8 @@ import DishStore from '../stores/DishStore';
 import DishActions from '../actions/DishActions';
 import Modal from './Modal';
 
+var s = require('underscore.string');
+
 class Dish extends React.Component {
     constructor(props) {
         super(props);
@@ -111,9 +113,10 @@ class Dish extends React.Component {
 
         if(this.state.tags) {
             tags = this.state.tags.map((tag, index) => {
+                let displayTag = s(tag).titleize().value();
                 return (
                 <span className="label label-info" key={index} data-form='deleteTagFromDish' data-tag-to-delete={tag} onClick={(e) => this.deleteTagClick(e)}>
-                    {tag} <span className='glyphicon glyphicon-trash'></span></span>
+                    {displayTag} <span className='glyphicon glyphicon-trash'></span></span>
                 );
             });
         }

@@ -21,6 +21,8 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 var flash = require('connect-flash');
 
+var s = require('underscore.string');
+
 var configDb = require('./config/database');
 
 var Dish = require('./models/dish');
@@ -86,7 +88,11 @@ app.get('/api/dishes', function (req, res, next) {
  */
 app.get('/api/dishes/search/tag/:tags', function (req, res, next) {
     var tags = req.params.tags;
-    var seacrhArray = tags.split(" ");
+    var seacrhArray = tags.split(",");
+    var seacrhArrayLength = seacrhArray.length;
+    for (var i = 0; i < seacrhArrayLength; i++) {
+        seacrhArray[i] = s(seacrhArray[i]).trim().toLowerCase().value();
+    }
     Dish.find({tags: {"$in": seacrhArray}}, function (err, dishes) {
         if (err) return next(err);
         if (!dishes) {
@@ -147,11 +153,20 @@ app.put('/api/dish', function (req, res, next) {
     var dishId = req.body.dishId;
     var dishName = req.body.dishName;
     var dishTags = req.body['dishTags[]'];
+    var lowerDishTags = [];
+
     if (typeof dishTags == 'undefined') {
-        dishTags = [];
+        lowerDishTags = [];
+    } else if (typeof dishTags == 'string') {
+        lowerDishTags = s(dishTags).trim().toLowerCase().value();
+    } else {
+        var dishTagsLength = dishTags.length;
+        for (var i = 0; i < dishTagsLength; i++) {
+            lowerDishTags[i] = s(dishTags[i]).trim().toLowerCase().value();
+        }
     }
 
-    Dish.findOneAndUpdate({_id: dishId}, {$set: {name: dishName, tags: dishTags}}, {new: true}, function (err, doc) {
+    Dish.findOneAndUpdate({_id: dishId}, {$set: {name: dishName, tags: lowerDishTags}}, {new: true}, function (err, doc) {
         if (err) {
             if (err.name === 'MongoError' && err.code === 11000) {
                 // Duplicate dishes
