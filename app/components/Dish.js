@@ -65,7 +65,7 @@ class Dish extends React.Component {
         e.preventDefault();
         let dishId = e.currentTarget.getAttribute('data-dish-id');
         let dishName = this.state.name.trim();
-        let tagToAdd = this.state.tagToAdd.trim();
+        let tagToAdd = s(this.state.tagToAdd).toLowerCase().value();
         let dishTags = this.state.tags;
 
         if(dishTags.indexOf(tagToAdd) > -1) {
