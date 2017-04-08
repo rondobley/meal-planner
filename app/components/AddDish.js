@@ -16,6 +16,9 @@ class AddDish extends React.Component {
 
     componentDidMount() {
         AddDishStore.listen(this.onChange);
+        $('#addDishModal').on('shown.bs.modal', function() {
+            $(".form-group input").focus();
+        });
     }
 
     componentWillUnmount() {
