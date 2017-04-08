@@ -9,6 +9,7 @@ class DishActions {
             'editDishSuccess',
             'editDishFail',
             'updateDishName',
+            'updateDishReference',
             'showModalSuccess',
             'hideModalSuccess'
         );
@@ -16,6 +17,10 @@ class DishActions {
 
     updateDishName(name) {
         this.actions.updateDishNameSuccess(name);
+    }
+
+    updateDishReference(reference) {
+        this.actions.updateDishReferenceSuccess(reference);
     }
 
     showModal(params) {
@@ -40,7 +45,7 @@ class DishActions {
         $.ajax({
             type: 'PUT',
             url: '/api/dish',
-            data: { dishId: payload.dishId, dishName: payload.dishName, 'dishTags[]': payload.dishTags }
+            data: { dishId: payload.dishId, dishName: payload.dishName, dishReference: payload.dishReference, 'dishTags[]': payload.dishTags }
         })
             .done((data) => {
                 assign(payload, data);

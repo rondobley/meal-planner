@@ -152,6 +152,7 @@ app.post('/api/dish', function (req, res, next) {
 app.put('/api/dish', function (req, res, next) {
     var dishId = req.body.dishId;
     var dishName = req.body.dishName;
+    var dishReference = req.body.dishReference;
     var dishTags = req.body['dishTags[]'];
     var lowerDishTags = [];
 
@@ -166,7 +167,7 @@ app.put('/api/dish', function (req, res, next) {
         }
     }
 
-    Dish.findOneAndUpdate({_id: dishId}, {$set: {name: dishName, tags: lowerDishTags}}, {new: true}, function (err, doc) {
+    Dish.findOneAndUpdate({_id: dishId}, {$set: {name: dishName, reference: dishReference, tags: lowerDishTags}}, {new: true}, function (err, doc) {
         if (err) {
             if (err.name === 'MongoError' && err.code === 11000) {
                 // Duplicate dishes

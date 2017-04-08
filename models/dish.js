@@ -6,6 +6,9 @@ var dishSchema = new mongoose.Schema({
         unique: true,
         index: true
     },
+    reference: {
+        type: String
+    },
     tags: [{
         type: String,
         index: true

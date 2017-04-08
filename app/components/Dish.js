@@ -14,6 +14,7 @@ class Dish extends React.Component {
         this.handleShowModal.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
         this.updateNameInput = this.updateNameInput.bind(this);
+        this.updateReferenceInput = this.updateReferenceInput.bind(this);
         this.updateTagToAddInput = this.updateTagToAddInput.bind(this);
         this.deleteTagClick = this.deleteTagClick.bind(this);
     }
@@ -51,13 +52,14 @@ class Dish extends React.Component {
         e.preventDefault();
         let dishId = e.currentTarget.getAttribute('data-dish-id');
         let dishName = this.state.name.trim();
+        let dishReference = this.state.reference.trim();
         let dishTags = this.state.tags;
         if(dishName == '') {
             this.setState({ modalFormValidationState:'has-error', helpBlock: 'You must enter a dish name' });
         }
 
         if(dishName) {
-            DishActions.editDish({ dishId: dishId, dishName: dishName, dishTags: dishTags, history: this.props.history });
+            DishActions.editDish({ dishId: dishId, dishName: dishName, dishReference: dishReference, dishTags: dishTags, history: this.props.history });
         }
     }
 
@@ -91,6 +93,10 @@ class Dish extends React.Component {
 
     updateNameInput(name) {
         this.setState({ name: name });
+    }
+
+    updateReferenceInput(reference) {
+        this.setState({ reference: reference });
     }
 
     updateTagToAddInput(tag) {
@@ -145,10 +151,12 @@ class Dish extends React.Component {
                                    handleHideModal={this.handleHideModal}
                                    dishId={this.state._id}
                                    dishName={this.state.name}
+                                   dishReference={this.state.reference}
                                    modalFormValidationState={this.state.modalFormValidationState}
                                    helpBlock={this.state.helpBlock}
                                    handleEdit={(e) => this.handleEdit(e)}
-                                   onChange={this.updateNameInput}
+                                   onNameInputChange={this.updateNameInput}
+                                   onReferenceInputChange={this.updateReferenceInput}
                             />;
                     break;
                 case 'deleteDish':
@@ -190,6 +198,7 @@ class Dish extends React.Component {
                             <li className="active">Dish</li>
                         </ol>
                         <h1>{this.state.name}</h1>
+                        <p>Recipe: {this.state.reference}</p>
                         {tags}
                         <hr></hr>
                         {addTagButton}{editDishButton}{deleteDishButton}

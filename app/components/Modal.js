@@ -27,10 +27,12 @@ class Modal extends React.Component {
             case 'editDish':
                 form = (<EditDish dishId={this.props.dishId}
                                     dishName={this.props.dishName}
+                                    dishReference={this.props.dishReference}
                                     modalFormValidationState={this.props.modalFormValidationState}
                                     helpBlock={this.props.helpBlock}
                                     handleEdit={this.props.handleEdit}
-                                    onChange={this.props.onChange}
+                                    onNameInputChange={this.props.onNameInputChange}
+                                    onReferenceInputChange={this.props.onReferenceInputChange}
                         />);
                 break;
             case 'deleteDish':

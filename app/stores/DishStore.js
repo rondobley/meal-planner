@@ -10,6 +10,7 @@ class DishStore {
         this.isEdited = false;
         this._id = null;
         this.name = 'Loading';
+        this.reference = '';
         this.tags = [];
         this.tagToAdd = '';
         this.showModal = false;
@@ -19,6 +20,10 @@ class DishStore {
 
     onUpdateDishNameSuccess(name) {
         this.name = name;
+    }
+
+    onUpdateDishReferenceSuccess(reference) {
+        this.reference = reference;
     }
 
     onShowModalSuccess(params) {
@@ -43,6 +48,7 @@ class DishStore {
 
     onEditDishSuccess(payload) {
         this.name = payload.name;
+        this.reference = payload.reference;
         this.tags = payload.tags;
         this.isEdited = true;
         payload.history.push('/dish/' + payload.name, this);
